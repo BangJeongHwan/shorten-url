@@ -14,13 +14,18 @@ class CodecTest {
 
     @Test
     public void Autowired_encCodec_TEST() {
+
         String originalURL = "https://developers.naver.com/notice";
-        String newUrl = codec.encode(originalURL);
+        String newUrl ="";
+        for(long i=0;i<10000000000000L;i++){
+            originalURL = originalURL+i;
+            newUrl = codec.encode(originalURL);
+        }
         System.out.println("ENCODE : " + newUrl + ", DECODE : " + codec.decode(newUrl));
-        System.out.println("---------------------------------");
-        String orgUrl = codec.decode("2Q3rKTOE");
-        System.out.println("orgUrl = " + orgUrl);
-        System.out.println("---------------------------------");
+//        System.out.println("---------------------------------");
+//        String orgUrl = codec.decode("2Q3rKTOE");
+//        System.out.println("orgUrl = " + orgUrl);
+//        System.out.println("---------------------------------");
         assertEquals("https://developers.naver.com/notice", codec.decode(newUrl));
     }
 }

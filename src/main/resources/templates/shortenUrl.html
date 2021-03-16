@@ -1,25 +1,37 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header" />
-<style>
-    .fieldError {
-        border-color: #bd2130;
-    }
-</style>
+<head>
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<!--    <script type="text/javascript" src="/resources/js/jquery-3.6.0.min.js"/>-->
+</head>
+
+<script>
+function sendData() {
+    var messageDTO = {
+        data:$("#url").val()
+    };
+    $.ajax({
+        url: "/dataSend",
+        data: messageDTO,
+        type:"POST",
+    }).done(function (fragment) {
+        alert("조회 성공");
+        $("#resultDiv").replaceWith(fragment);
+    });
+}
+</script>
 <body>
-<div class="container">base.url
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form role="form" action="/shorten-url/find" th:object="${memberForm}"
-          method="post">
-        <div class="form-group">
-            <label th:for="city">Shorten Url</label>
-            <input type="text" th:field="*{city}" class="form-control"
-                   placeholder="도시를 입력하세요">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    <br/>
-    <div th:replace="fragments/footer :: footer" />
+<div class="container">
+    <input id="url" placeholder="Please enter text" type="text" class="form-control" style="width:800px;height:30px;font-size:12px;">
+    <button class="btn btn-outline-secondary" type="button" onclick="sendData()">submit</button>
+    <div id="resultDiv">
+        <p>변환 결과 : </p><p th:if="${result}!=null" th:text="${result}"></p>
+    </div>
 </div> <!-- /container -->
+
 </body>
 </html>
+
+

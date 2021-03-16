@@ -1,13 +1,12 @@
 package com.openapi.shortenurl.controller;
 
 import com.openapi.shortenurl.Utils.Codec;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UrlController {
@@ -22,10 +21,22 @@ public class UrlController {
     }
 
     @GetMapping("shorten-url")
-    public String hello(Model model, @RequestParam("orgUrl") String orgUrl){
-        String newUrl = codec.encode(orgUrl);
-        model.addAttribute("data",newUrl);
-        return "hello";
+    public String shortenUrl(Model model){
+        return "shortenUrl";
+    }
+
+    @RequestMapping(value = "/dataSend",method = RequestMethod.POST)
+    public String dataSend(Model model,MessageDTO dto){
+
+        String newUrl = codec.encode(dto.getData());
+        model.addAttribute("result",newUrl);
+
+        return "/shortenUrl :: #resultDiv";
+    }
+
+    @Data
+    static class MessageDTO {
+        private String data;
     }
 
     @GetMapping("/{newUrl}")
@@ -33,18 +44,4 @@ public class UrlController {
         String orgUrl = codec.decode(newUrl);
         return "redirect:"+orgUrl;
     }
-/*
-    @PostMapping(value = "/shorten-url/find")
-    public String find(@Valid MemberForm form, BindingResult result) {
-        if (result.hasErrors()) {
-            return "members/createMemberForm";
-        }
-        Address address = new Address(form.getCity(), form.getStreet(),
-                form.getZipcode());
-        Member member = new Member();
-        member.setName(form.getName());
-        member.setAddress(address);
-        memberService.join(member);
-        return "redirect:/";
-    }*/
 }
