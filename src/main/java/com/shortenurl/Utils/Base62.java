@@ -1,45 +1,63 @@
-package com.openapi.shortenurl.Utils;
+package com.shortenurl.Utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class Codec {
-    // 8 Character 이내로 생성
-    static Long counter = 10000000000000L;
-    static Map<Long, String> indexToUrl = new HashMap<>();
-    static Map<String, Long> urlToIndex = new HashMap<String, Long>();
+@Slf4j
+public class Base62 {
+    //
+    /**
+     * 8 Character set counter
+     */
+    private static Long counter = 10000000000000L;
+
+    private static Map<Long, String> indexToUrl = new HashMap<>();
+    private static Map<String, Long> urlToIndex = new HashMap<String, Long>();
+    private static Map<Long, Long> callUrlCnt = new HashMap<Long, Long>();
+
+    /**
+     * Base62 Character
+     */
     static String base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    @Value("${base.url}")
-    private String baseUrl;
-
-    // Encodes a URL to a shortened URL.
+    /**
+     * Encodes a original URL to its shortened URL.
+     *
+     * @return the base 62 string of an integer
+     */
     public String encode(String longUrl) {
         if (urlToIndex.containsKey(longUrl)) {
-//            return "http://tinyurl.com/"+base62Encode(urlToIndex.get(longUrl));
-            return baseUrl+base62Encode(urlToIndex.get(longUrl));
+            return base62Encode(urlToIndex.get(longUrl));
         }
         else {
             indexToUrl.put(counter, longUrl);
             urlToIndex.put(longUrl, counter);
+            callUrlCnt.put(counter,0L);
             counter++;
-//            return "http://tinyurl.com/"+base62Encode(urlToIndex.get(longUrl));
-            return baseUrl+base62Encode(urlToIndex.get(longUrl));
-
+            return base62Encode(urlToIndex.get(longUrl));
         }
     }
 
-    // Decodes a shortened URL to its original URL.
+
+    /**
+     * Decodes a shortened URL to its original URL.
+     *
+     * @return the base 62 value of a string.
+     */
     public String decode(String shortUrl) {
         String base62Encoded = shortUrl.substring(shortUrl.lastIndexOf("/") + 1);
         long decode = 0;
         for(int i = 0; i < base62Encoded.length(); i++) {
             decode = decode * 62 + base62.indexOf("" + base62Encoded.charAt(i));
+        }
+        if(callUrlCnt.get(decode)!=null) {
+            callUrlCnt.put(decode, callUrlCnt.get(decode) + 1);
+            log.info("'"+indexToUrl.get(decode)+"' Url call Count : {}건", callUrlCnt.get(decode));
         }
         return indexToUrl.get(decode);
     }
@@ -55,4 +73,5 @@ public class Codec {
         }
         return sb.reverse().toString();
     }
+
 }

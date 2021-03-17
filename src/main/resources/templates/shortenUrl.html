@@ -1,25 +1,33 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Hello</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<!--    <script type="text/javascript" src="/resources/js/jquery-3.6.0.min.js"/>-->
 </head>
 
 <script>
 function sendData() {
-    var messageDTO = {
-        data:$("#url").val()
-    };
-    $.ajax({
-        url: "/dataSend",
-        data: messageDTO,
-        type:"POST",
-    }).done(function (fragment) {
-        alert("조회 성공");
-        $("#resultDiv").replaceWith(fragment);
-    });
+    var orgURL = $("#url").val().trim();
+
+    if(!orgURL.match(/^http(s?):\/\//)){
+        alert("URL 앞에 http://, https:// 를 붙여주세요!!");
+        $("url").focus();
+    }else{
+        var messageDTO = {
+            data:orgURL
+        };
+        $.ajax({
+            url: "/dataSend",
+            data: messageDTO,
+            type:"POST",
+        }).done(function (fragment) {
+            alert("조회 성공");
+            $("#resultDiv").replaceWith(fragment);
+        });
+    }
+
 }
 </script>
 <body>

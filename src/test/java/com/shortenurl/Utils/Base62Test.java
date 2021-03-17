@@ -1,31 +1,33 @@
-package com.openapi.shortenurl.Utils;
+package com.shortenurl.Utils;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.junit4.SpringRunner;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
-class CodecTest {
+class Base62Test {
 
     @Autowired
-    private Codec codec;
+    private Base62 base62;
 
     @Test
-    public void Autowired_encCodec_TEST() {
+    public void testEncodeAndDecode(){
 
         String originalURL = "https://developers.naver.com/notice";
-        String newUrl ="";
-        for(long i=0;i<10000000000000L;i++){
-            originalURL = originalURL+i;
-            newUrl = codec.encode(originalURL);
-        }
-        System.out.println("ENCODE : " + newUrl + ", DECODE : " + codec.decode(newUrl));
+        String newUrl =base62.encode(originalURL);
+        System.out.println("ENCODE : " + newUrl + ", DECODE : " + base62.decode(newUrl));
 //        System.out.println("---------------------------------");
 //        String orgUrl = codec.decode("2Q3rKTOE");
 //        System.out.println("orgUrl = " + orgUrl);
 //        System.out.println("---------------------------------");
-        assertEquals("https://developers.naver.com/notice", codec.decode(newUrl));
+        assertEquals("https://developers.naver.com/notice", base62.decode(newUrl));
     }
+
 }
