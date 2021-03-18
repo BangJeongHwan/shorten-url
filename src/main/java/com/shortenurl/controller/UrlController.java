@@ -42,7 +42,7 @@ public class UrlController {
      * @return
      */
     @GetMapping("/{newUrl}")
-    public String hello(@PathVariable("newUrl") String newUrl){
+    public String redirectOrgUrl(@PathVariable("newUrl") String newUrl){
         String orgUrl = base62.decode(newUrl);
         return "redirect:"+orgUrl;
     }
