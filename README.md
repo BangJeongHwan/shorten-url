@@ -28,5 +28,6 @@ jdk 로 jar 실행시키기
     - 80 포트는 관리자 권한이 필요
     - sudo java -jar shorten-url-0.0.1-SNAPSHOT.jar
 
+
 관리자 웹 접속
-1. http://localhost/shorten-url 로 접속
+1. http://설치서버IP/shorten-url 로 접속
